@@ -1,23 +1,18 @@
-# ---
-# jupyter:
-#   jupytext:
-#     text_representation:
-#       extension: .jl
-#       format_name: light
-#       format_version: '1.5'
-#       jupytext_version: 1.4.1
-#   kernelspec:
-#     display_name: Julia 1.4.0
-#     language: julia
-#     name: julia-1.4
-# ---
-
-using Pkg
-
+## load packages
 using Plots
-using GraphRecipes, LightGraphs, Distributions, Distances, DataFrames, StatsBase
+using Distributions, Distances, DataFrames, StatsBase
 
-# +
+```
+makeCitizens(n::Int64)
+
+Create a population of `n` individuals uniformly distributed in a rectangle.
+
+Returns the spatial positions of the citizens, their Euclidean distances from
+each other, and initializes their disease status to being unaffected (0).
+
+This function can be generalized to include other spatial distributions, and
+other ways to calculate distance between citizens.
+```
 function makeCitizens(n::Int64)
     x = rand(Uniform(),n);
     y = rand(Uniform(),n);
@@ -27,11 +22,18 @@ function makeCitizens(n::Int64)
     return citizenStatus,citizenDists,citizenPos
 end
 
+```
+infectCitizen!(citizenStatus::DataFrame)
+
+Picks the first individual in `citizenStatus` to be infected.  This
+is equivalent to randomly picking someone.  This function could be generalized
+by picking someone in a defined region or with defined characteristics.
+```
 function infectCitizen!(citizenStatus::DataFrame)
     citizenStatus[1,2]=1
 end
 
-# +
+
 function updateStatus!(citizens::DataFrame,distances::Matrix{Float64},
         time::Int64,infectionDist::Float64=0.2,
         infectionWindow::Int64=1,infectionProb::Float64=0.2)
@@ -45,12 +47,12 @@ end
 
 function f(x)
     if(x==true)
-        return 0 
+        return 0
     else
         return 1
     end
 end
-   
+
 # -
 
 function followCitizens!(citizens::DataFrame,distances::Matrix{Float64},ntime::Int64=300,
@@ -63,7 +65,7 @@ function followCitizens!(citizens::DataFrame,distances::Matrix{Float64},ntime::I
     end
 end
 
-function uninfected(status::DataFrame) 
+function uninfected(status::DataFrame)
     return mean(status.infected.>0)
 end
 
