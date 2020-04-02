@@ -1,3 +1,8 @@
+include("distancing.jl")
+
+#####################################
+# more infectious
+#####################################
 n=10000
 status,d,pos = makeCitizens(n);
 infectCitizen!(status)
@@ -11,6 +16,9 @@ cumulativeInfections(status)
 
 gif(infectionSpread(status,pos),fps=15)
 
+#####################################
+# less infectious
+#####################################
 n=10000
 status1,d,pos = makeCitizens(n);
 infectCitizen!(status1)

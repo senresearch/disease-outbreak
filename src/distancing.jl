@@ -85,7 +85,7 @@ end
 ## convert trues to 1
 ###
 function trueone(x)
-    if(x==true)
+    if x==true
         return 0
     else
         return 1
@@ -130,7 +130,8 @@ spatial positions in `pos`.
 ```
 function infectionSpread(status::DataFrame,pos::Matrix{Float64})
     spread = @animate for i in 1:365
-      scatter(pos[:,1],pos[:,2],color=f.((status.infected.<=i).&(status.infected.>0)))
+      scatter(pos[:,1],pos[:,2],
+              color=trueone.((status.infected.<=i).&(status.infected.>0)))
     end
     return spread
 end
