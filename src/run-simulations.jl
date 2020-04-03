@@ -20,13 +20,13 @@ gif(infectionSpread(status,pos),fps=15)
 # less infectious
 #####################################
 n=10000
-status1,d,pos = makeCitizens(n);
+status1,d1,pos1 = makeCitizens(n);
 infectCitizen!(status1)
-followCitizens!(status1,d,365,0.05,14,0.002)
+followCitizens!(status1,d1,365,0.05,14,0.002)
 uninfected(status1)
 
 newInfections(status1)
 
 cumulativeInfections(status1)
 
-gif(infectionSpread(status1,pos),fps=15)
+gif(infectionSpread(status1,pos1),fps=15)
