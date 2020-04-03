@@ -22,6 +22,13 @@ function makeCitizens(n::Int64)
     return citizenStatus,citizenDists,citizenPos
 end
 
+```makeCitizens(citizenPos::Matrix{Float64})
+```
+function makeCitizens(citizenPos::Matrix{Float64})
+    citizenDists = pairwise(Euclidean(),citizenPos,dims=1)
+    citizenStatus = DataFrame(ind=1:n,infected=zeros(Int64,n))
+    return citizenStatus,citizenDists,citizenPos
+end
 ```
 infectCitizen!(citizenStatus::DataFrame)
 
