@@ -25,19 +25,21 @@ end
 ```makeCitizens(citizenPos::Matrix{Float64})
 ```
 function makeCitizens(citizenPos::Matrix{Float64})
+    n = size(citizenPos,1)
     citizenDists = pairwise(Euclidean(),citizenPos,dims=1)
     citizenStatus = DataFrame(ind=1:n,infected=zeros(Int64,n))
     return citizenStatus,citizenDists,citizenPos
 end
 ```
-infectCitizen!(citizenStatus::DataFrame)
+infectCitizens!(citizenStatus::DataFrame)
 
-Picks the first individual in `citizenStatus` to be infected.  This
-is equivalent to randomly picking someone.  This function could be generalized
-by picking someone in a defined region or with defined characteristics.
+Picks `nInfect` random individuals in `citizenStatus` to be infected.  This
+function could be generalized by picking someone in a defined region or
+with defined characteristics.
 ```
-function infectCitizen!(citizenStatus::DataFrame)
-    citizenStatus[1,2]=1
+function infectCitizens!(citizenStatus::DataFrame,nInfect::Int64)
+    n = size(citizenStatus,1)
+    citizenStatus[sample(1:n,nInfect),2] .= 1
 end
 
 ```
@@ -135,8 +137,8 @@ infectionSpread(status::DataFrame,pos::Matrix{Float64})
 Make a animation of the spread of the infection using the `status` data and
 spatial positions in `pos`.
 ```
-function infectionSpread(status::DataFrame,pos::Matrix{Float64})
-    spread = @animate for i in 1:365
+function infectionSpread(status::DataFrame,pos::Matrix{Float64},ntime::Int64=365)
+    spread = @animate for i in 1:ntime
       scatter(pos[:,1],pos[:,2],
               color=trueone.((status.infected.<=i).&(status.infected.>0)))
     end
