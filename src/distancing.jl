@@ -89,11 +89,12 @@ function followCitizens!(citizens::DataFrame,distances::Matrix{Float64},ntime::I
                         infectionDist::Float64=0.1,
                         infectionWindow::Int64=1,infectionProb::Float64=0.2)
     # print expected number of infections per infected individual
-    print(round(size(citizens,1)*pi*infectionDist^2*infectionWindow*infectionProb,digits=2))
+    r0 = round(size(citizens,1)*pi*infectionDist^2*infectionWindow*infectionProb,digits=2)
     for i in 2:ntime
          updateStatus!(citizens,distances,i,infectionDist,
             infectionWindow,infectionProb)
     end
+    return r0
 end
 
 ###

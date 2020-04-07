@@ -1,18 +1,18 @@
 using CSV, DataFrames,StatsBase
-include("src/distancing.jl")
+include("distancing.jl")
 
-memphis = CSV.read("data/Memphis_residences.csv",
-                   type=Float64,missingstring="NA")
+memphis = CSV.read("data/Memphis_residences.csv",type=Float64,
+                    missingstring="NA")
 
 names(memphis)
 memphispos = convert(Matrix{Float64},dropmissing(memphis[:,3:4]))
 
 n = size(memphispos,1);
-idx = sample(1:n,10000)
+idx = sample(1:n,20000)
 sampleMemphispos = memphispos[idx,:]
 status,d,pos = makeCitizens(sampleMemphispos)
-infectCitizens!(status,5)
-followCitizens!(status,d,365,0.1,14,0.00005)
+infectCitizens!(status,1)
+followCitizens!(status,d,100,0.5,14,0.000015)
 
 uninfected(status)
 
