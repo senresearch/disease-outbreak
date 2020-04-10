@@ -1,27 +1,16 @@
 ## implement Markov Chain with SEIR
 
-mutable struct State
-    S::Float64
-    E::Float64
-    I::Vector{Float64}
-    R::Float64
-    D::Float64
-end
+abstract type Dynamics end
+abstract type SEI3RDynamics <: Dynamics end
 
-struct Dynamics
+struct SEI3RDynamics
     α::Float64
     β::Vector{Float64}
-    p::Vector{Float64}
     γ::Vector{Float64}
+    p::Vector{Float64}
     μ::Float64
 end
 
-function add(x::State,y::State)
-    return State(x.S+y.S,x.E+y.E,x.I.+y.I,x.R+y.R,x.D+y.D)
-end
-function state2vec(s::State)
-    return [ s.S s.E s.I s.R s.D ][1,:]
-end
 
 function vec2state(v::Vector{Float64})
     return State(S=v[1],E=v[2],I=copy(v[3:5]),R=v[6],D=v[7])
@@ -33,21 +22,24 @@ function oneDay(s::State,par::Dynamics)
     return State(S,E,I,R,D)
 end
 
-function model0(S,E,I,R,D,α,β,γ,p,μ)
-    dS = -( β[1]*I[1] - β[2]*I[2] - β[3]*I[3] ) * S
-    dE =  ( β[1]*I[1] + β[2]*I[2] + β[3]*I[3] ) - α*E
-    dI=zeros(3)
-    dI[1] = α*E - (γ[1]+p[1]) * I[1]
-    dI[2] = p[1]*I[1] - (γ[2]+p[2]) * I[2]
-    dI[3] = p[2]*I[2] - (γ[3]+μ) * I[3]
-    dR = γ[1]*I[1] + γ[2]*I[2] + γ[3]*I[3]
-    dD = μ*I[3]
-    return S+dS, E+dE, I.+dI, R+dR, D+dD
+function change(s::Vector{Float64},d::SEI3RDynamics)
+    ds = NamedTuple{(:S,:E,:I1,:I2,:I3,:R,:D)}(s)
+    st = NamedTuple{(:S,:E,:I1,:I2,:I3,:R,:D)}(s)
+
+    ds.S = -( d.β[1]*st.I[1] - d.β[2]*st.I[2] - d.β[3]*stI[3] ) * st.S
+    ds.E =  ( s.β[1]*st.I[1] + d.β[2]*st.I[2] + s.β[3]*st.I[3] ) - d.α*st.E
+    ds.I1 = d.α*st.E - (d.γ[1]+d.p[1]) * st.I[1]
+    ds.I2 = d.p[1]*st.I[1] - (d.γ[2]+d.p[2]) * st.I[2]
+    ds.I3 = d.p[2]*st.I[2] - (d.[3]+d.μ) * st.I[3]
+    ds.R = d.γ[1]*st.I[1] + d.γ[2]*st.I[2] + d.γ[3]*st.I[3]
+    ds.D = d.μ*st.I[3]
+    return values(ds)
 end
 
 
-
-
+function update(s::State,d::Dynamics)
+    return
+end
 
 function getParams(IncubPeriod::Float64,DurMildInf::Float64,
     MildRate::Float64,SevereRate::Float64,CriticalRate::Float64,
