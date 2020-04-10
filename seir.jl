@@ -2,6 +2,7 @@
 
 # abstract type Dynamics end
 # abstract type SEI3RDynamics <: Dynamics end
+using Plots, Statistics, StatsBase
 
 struct SEI3RDynamics
     α::Float64
@@ -15,9 +16,9 @@ end
 function change(s::Vector{Float64},d::SEI3RDynamics)
     # this is done purely for readability of the formula
     st = NamedTuple{(:S,:E,:I1,:I2,:I3,:R,:D)}(s)
-
-    S = -( d.β[1]*st.I1 - d.β[2]*st.I2 - d.β[3]*st.I3 ) * st.S
-    E =  ( d.β[1]*st.I1 + d.β[2]*st.I2 + d.β[3]*st.I3 ) - d.α*st.E
+    N = sum(s)
+    S = -(( d.β[1]*st.I1 + d.β[2]*st.I2 + d.β[3]*st.I3 )/N) *st.S
+    E =  (( d.β[1]*st.I1 + d.β[2]*st.I2 + d.β[3]*st.I3 )/N) *st.S - d.α*st.E
     I1 = d.α*st.E - (d.γ[1]+d.p[1]) * st.I1
     I2 = d.p[1]*st.I1 - (d.γ[2]+d.p[2]) * st.I2
     I3 = d.p[2]*st.I2 - (d.γ[3]+d.μ) * st.I3
@@ -51,12 +52,23 @@ function getParams(IncubPeriod::Float64,DurMildInf::Float64,
     return SEI3RDynamics(α,β,γ,p,μ)
 end
 
-d=getParams(5.0,6.0,0.5,0.1,0.1,0.15,0.05,0.1,6.0,8.0,2.0)
+d=getParams(5.0,6.0,0.5,0.1,0.1,0.15,0.05,0.1,6.0,8.0,0.02)
 
-state = [1000.0,0.0,0.0,0.0,0.0,0.0,0.0]
-
+# d = SEI3RDynamics(0.2,[0.5,0.1,0.1],[0.1,0.1,0.1],[0.1,0.1],0.05)
+state = [9999.0,1.0,0.0,0.0,0.0,0.0,0.0]
 ntime = 300
-nstates = Matrix{Float64}
-for i in 1:300
-  n = oneDay(n,d)
+deltaStates = zeros(7,ntime)
+states =zeros(7,ntime)
+states[:,1] = state
+
+change(state,d)
+
+
+for i in 2:ntime
+    deltaStates[:,i] = change(states[:,i-1],d)
+    states[:,i] = states[:,i-1].+deltaStates[:,i]
 end
+
+using Plots
+
+plot(deltaStates[7,:])
