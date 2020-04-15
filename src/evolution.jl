@@ -1,6 +1,6 @@
 using Plots, Statistics, StatsBase
+include("sei3r.jl")
 include("sirx.jl")
-include("seir.jl")
 
 Dynamics = Union{SEI3RDynamics,SIRXDynamics}
 
