@@ -1,8 +1,9 @@
+using Plots, Statistics, StatsBase
 include("sirx.jl")
 include("seir.jl")
 
-Dynamics = Union{SEI3R,SIRX}
- 
+Dynamics = Union{SEI3RDynamics,SIRXDynamics}
+
 function evolve(state::Vector{Float64},d::Dynamics,ntime::Int64)
     states = zeros(nstates(d),ntime)
     deltaStates = zeros(nstates(d),ntime)
