@@ -33,3 +33,11 @@ end
 function stateNames(d::SIRXDynamics)
     return ["S" "I" "R" "X"]
 end
+
+function initialize(popSize::Float64,
+    nExposed::Float64,d::SIRXDynamics)
+    state = zeros(nstates(d))
+    state[2] = nInfected
+    state[1] = popSize-nInfected
+    return state
+end
