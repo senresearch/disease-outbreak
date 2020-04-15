@@ -7,6 +7,14 @@ struct SIRXDynamics
     κ0::Float64
 end
 
+function initialize(popSize::Float64,
+    nExposed::Float64,d::SIRXDynamics)
+    state = zeros(nstates(d))
+    state[2] = nInfected
+    state[1] = popSize-nInfected
+    return state
+end
+
 # change in a day
 """
 change(s::Vector{Float64},d::SIRXDynamics)
@@ -32,12 +40,4 @@ function nstates(d::SIRXDynamics)
 end
 function stateNames(d::SIRXDynamics)
     return ["S" "I" "R" "X"]
-end
-
-function initialize(popSize::Float64,
-    nExposed::Float64,d::SIRXDynamics)
-    state = zeros(nstates(d))
-    state[2] = nInfected
-    state[1] = popSize-nInfected
-    return state
 end
