@@ -147,7 +147,7 @@ spatial positions in `pos`.
 function infectionSpread(status::DataFrame,pos::Matrix{Float64},ntime::Int64=365)
     spread = @animate for i in 1:ntime
       scatter(pos[:,1],pos[:,2],
-              color=trueone.((status.infected.<=i).&(status.infected.>0)))
+              color=trueone.((status.infected.<=i).&(status.infected.>0)),label="")
     end
     return spread
 end

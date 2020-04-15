@@ -11,7 +11,7 @@ n = size(memphispos,1);
 idx = sample(1:n,20000)
 sampleMemphispos = memphispos[idx,:]
 status,d,pos = makeCitizens(sampleMemphispos)
-infectCitizens!(status,1)
+infectCitizens!(status,10)
 followCitizens!(status,d,100,0.5,14,0.000015)
 
 uninfected(status)
@@ -20,4 +20,4 @@ newInfections(status)
 
 cumulativeInfections(status)
 
-gif(infectionSpread(status,pos,360),fps=15)
+gif(infectionSpread(status,pos,80),"memphis.gif",fps=15)
