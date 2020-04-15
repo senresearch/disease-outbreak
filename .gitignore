@@ -1,3 +1,4 @@
+
 *.jl.*.cov
 *.jl.cov
 *.jl.mem
@@ -6,3 +7,6 @@
 /dev/
 /docs/build/
 /docs/site/
+
+*~
+*.pdf
