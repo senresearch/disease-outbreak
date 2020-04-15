@@ -1,14 +1,12 @@
-include("seir.jl")
-
 struct SIRXDynamics
     α::Float64
-    β::Vector{Float64}
+    β::Float64
     κ::Float64
     κ0::Float64
 end
 
 function initialize(popSize::Float64,
-    nExposed::Float64,d::SIRXDynamics)
+    IXRatio::Float64,d::SIRXDynamics)
     state = zeros(nstates(d))
     state[2] = nInfected
     state[1] = popSize-nInfected
@@ -24,7 +22,7 @@ Retutn the change in the state of the population in a day
 s = state vector (S,I,R)
 d = SIRX dynamics parameters
 """
-function change(s::Vector{Float64},d::SEI3RDynamics)
+function change(s::Vector{Float64},d::SIRXDynamics)
     # this is done purely for readability of the formula
     st = NamedTuple{(:S,:I,:R,:X)}(s)
     N = sum(s) # population size
@@ -40,4 +38,12 @@ function nstates(d::SIRXDynamics)
 end
 function stateNames(d::SIRXDynamics)
     return ["S" "I" "R" "X"]
+end
+
+function getParams(κ::Float64,κ₀::Float64,
+    R₀::Float64,TInfected::Float64)
+    Q = (κ+κ₀)*TInfected
+    β = (κ+κ₀)/Q - (κ+κ₀)
+    α = R₀*(β+κ+κ₀)
+    return SIRXDynamics(α,β,κ,κ₀)
 end
