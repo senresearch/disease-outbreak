@@ -4,7 +4,7 @@ include("sirx.jl")
 
 Dynamics = Union{SEI3RDynamics,SIRXDynamics}
 
-function evolve(state::Vector{Float64},d::Dynamics,ntime::Int64)
+function evolve(N::Float64,state::Vector{Float64},d::Dynamics,ntime::Int64)
     states = zeros(nstates(d),ntime)
     deltaStates = zeros(nstates(d),ntime)
     states[:,1] = state
@@ -15,6 +15,6 @@ function evolve(state::Vector{Float64},d::Dynamics,ntime::Int64)
     return (states=states,deltaStates=deltaStates)
 end
 
-function plotEvolution(states::Matrix{Float64},d::Dynamics)
-    Plots.plot(Matrix(states'),label=stateNames(d))
+function plotEvolution(N::Float64,states::Matrix{Float64},d::Dynamics)
+    Plots.plot(N*Matrix(states'),label=stateNames(d))
 end

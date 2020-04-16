@@ -1,7 +1,5 @@
 ## implement Markov Chain with SEIR
 
-using Plots, Statistics, StatsBase
-
 struct SEI3RDynamics
     α::Float64
     β::Vector{Float64}
@@ -22,9 +20,9 @@ d = SEI3R dynamics parameters
 function change(s::Vector{Float64},d::SEI3RDynamics)
     # this is done purely for readability of the formula
     st = NamedTuple{(:S,:E,:I1,:I2,:I3,:R,:D)}(s)
-    N = sum(s) # population size
-    S = -(( d.β[1]*st.I1 + d.β[2]*st.I2 + d.β[3]*st.I3 )/N) *st.S
-    E =  (( d.β[1]*st.I1 + d.β[2]*st.I2 + d.β[3]*st.I3 )/N) *st.S - d.α*st.E
+    # N = sum(s) # population size
+    S = -( d.β[1]*st.I1 + d.β[2]*st.I2 + d.β[3]*st.I3 )*st.S
+    E =  ( d.β[1]*st.I1 + d.β[2]*st.I2 + d.β[3]*st.I3 )*st.S - d.α*st.E
     I1 = d.α*st.E - (d.γ[1]+d.p[1]) * st.I1
     I2 = d.p[1]*st.I1 - (d.γ[2]+d.p[2]) * st.I2
     I3 = d.p[2]*st.I2 - (d.γ[3]+d.μ) * st.I3
@@ -65,10 +63,9 @@ function getParams(IncubPeriod::Float64,DurMildInf::Float64,
     return SEI3RDynamics(α,β,γ,p,μ)
 end
 
-function initialize(popSize::Float64,
-    nExposed::Float64,d::SEI3RDynamics)
+function initialize(E::Float64,d::SEI3RDynamics)
     state = zeros(nstates(d))
-    state[2] = nExposed
-    state[1] = popSize-nExposed
+    state[2] = E
+    state[1] = 1-E
     return state
 end

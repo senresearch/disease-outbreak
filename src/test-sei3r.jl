@@ -5,9 +5,10 @@ d0 = getParams(5.0,6.0,0.5,0.1,0.1,0.15,0.06,6.0,8.0,0.4)
 # social distancing reducing transmission probs by 1/2
 d1 = getParams(5.0,6.0,0.5/2,0.1/2,0.1/2,0.15,0.06,6.0,8.0,0.4)
 
-state0 = initialize(1000.0,1.0,d0)
+N = 1000.0
+state0 = initialize(1.0/N,d0)
 (states0,deltaStates0) = evolve(state0,d0,300)
-plotEvolution(states0,d0)
+plotEvolution(N*states0,d0)
 # savefig("dist300.pdf")
 state0 = initialize(1000.0,1.0,d0)
 (states0,deltaStates0) = evolve(state0,d0,60)
