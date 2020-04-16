@@ -5,10 +5,11 @@ struct SIRXDynamics
     κ0::Float64
 end
 
-function initialize(IXRatio::Float64,d::SIRXDynamics)
+function initialize(N::Float64,C₀::Float64,IXRatio::Float64,d::SIRXDynamics)
     state = zeros(nstates(d))
-    state[2] = nInfected
-    state[1] = popSize-nInfected
+    state[4] = C₀/N # X0, page 1, Supplement
+    state[2] = IXRatio*(C₀/N) # I0, page 1, supplement
+    state[1] = 1.0-state[2]-state[4]
     return state
 end
 
@@ -24,11 +25,11 @@ d = SIRX dynamics parameters
 function change(s::Vector{Float64},d::SIRXDynamics)
     # this is done purely for readability of the formula
     st = NamedTuple{(:S,:I,:R,:X)}(s)
-    S = -( d.α * st.I + d.κ0)*st.S
+    S = -( d.α * st.I + d.κ0) * st.S
     I = d.α*st.I*st.S - d.β*st.I - d.κ0*st.I - d.κ*st.I
     R = d.β*st.I + d.κ0*st.S
-    X = (d.κ+d.κ0)*st.I
-    return [S,E,I,R,X]
+    X = (d.κ+d.κ0) * st.I
+    return [S,I,R,X]
 end
 
 function nstates(d::SIRXDynamics)
@@ -39,9 +40,8 @@ function stateNames(d::SIRXDynamics)
 end
 
 function getParams(κ::Float64,κ₀::Float64,
-    R₀::Float64,TInfected::Float64)
-    Q = (κ+κ₀)*TInfected
-    β = (κ+κ₀)/Q - (κ+κ₀)
-    α = R₀*(β+κ+κ₀)
+    R₀Free::Float64,TInfected::Float64)
+    β = 1.0/TInfected
+    α = R₀Free*β
     return SIRXDynamics(α,β,κ,κ₀)
 end
