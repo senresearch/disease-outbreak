@@ -5,8 +5,7 @@ struct SIRXDynamics
     κ0::Float64
 end
 
-function initialize(popSize::Float64,
-    IXRatio::Float64,d::SIRXDynamics)
+function initialize(IXRatio::Float64,d::SIRXDynamics)
     state = zeros(nstates(d))
     state[2] = nInfected
     state[1] = popSize-nInfected
@@ -25,10 +24,9 @@ d = SIRX dynamics parameters
 function change(s::Vector{Float64},d::SIRXDynamics)
     # this is done purely for readability of the formula
     st = NamedTuple{(:S,:I,:R,:X)}(s)
-    N = sum(s) # population size
-    S = -(( d.α * st.I + d.κ0)/N) *st.S
-    I = d.α*st.I*st.S/N - d.β*st.I - d.κ0*st.I - d.κ*st.I
-    R = d.β*st.I + d.κ0*st.S/N
+    S = -( d.α * st.I + d.κ0)*st.S
+    I = d.α*st.I*st.S - d.β*st.I - d.κ0*st.I - d.κ*st.I
+    R = d.β*st.I + d.κ0*st.S
     X = (d.κ+d.κ0)*st.I
     return [S,E,I,R,X]
 end
