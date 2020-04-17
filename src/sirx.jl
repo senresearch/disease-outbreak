@@ -10,6 +10,13 @@ end
 # default constructor
 SIRX() = SIRX(1.0,1.0,0.0,0.0)
 
+"""
+state0 = initialize(N::Float64,C0::Float64,IXRatio::Float64,
+    d::SIRX)
+
+Return a vector of inital state values.
+"""
+
 function initialize(N::Float64,C0::Float64,IXRatio::Float64,
     d::SIRX)
     state = zeros(nstates(d))
@@ -23,9 +30,9 @@ end
 """
 change(s::Vector{Float64},d::SIRX)
 
-Retutn the change in the state of the population in a day
+Retutn the change in the state of the population in a day.
 
-s = state vector (S,I,R)
+s = state vector (S,I,R,X)
 d = SIRX dynamics parameters
 """
 function change(s::Vector{Float64},d::SIRX)
@@ -44,6 +51,23 @@ end
 function stateNames(d::SIRX)
     return ["S" "I" "R" "X"]
 end
+
+"""
+param0 = getParams(κ::Float64,κ0::Float64,
+    R0Free::Float64,TInfected::Float64,d::Dynamics)
+
+Return inital parameter values of SIRX dynamics parameters.
+
+κ = the rate of quarantine measures for symptomatic infected
+    indviduals in (I)nfected state
+κ0 = the containment rate effective in both (S)useptible and I states
+      i.e. social distancing, curfews, etc.
+R0Free = basic (unconstrained) reproduction number computed by α/β.
+TInfected = the average time for an individual to remain infectious
+     in I before (R)emoved
+d = a type of Dynamics, SIRX
+
+"""
 
 function getParams(κ::Float64,κ0::Float64,
     R0Free::Float64,TInfected::Float64,d::Dynamics)
