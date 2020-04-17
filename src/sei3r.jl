@@ -9,6 +9,9 @@ struct SEI3R <: Dynamics
     μ::Float64
 end
 
+# default constructor
+SEI3R() = SEI3R(1.0,[1.0, 0.0, 0.0],zeros(3),zeros(2),0.0)
+
 # change in a day
 """
 change(s::Vector{Float64},d::SEI3R)
@@ -42,7 +45,8 @@ end
 function getParams(IncubPeriod::Float64,DurMildInf::Float64,
     MildRate::Float64,SevereRate::Float64,CriticalRate::Float64,
     FracSevere::Float64,FracCritical::Float64,
-    DurHosp::Float64,TimeICUStay::Float64,ICUDeathRate::Float64)
+    DurHosp::Float64,TimeICUStay::Float64,ICUDeathRate::Float64,
+    d::SEI3R)
 
     CFR = ICUDeathRate*FracCritical
     FracMild = 1.0-FracSevere-FracCritical
