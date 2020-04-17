@@ -1,6 +1,7 @@
 ## implement Markov Chain with SEIR
+include("dynamics.jl")
 
-struct SEI3RDynamics
+struct SEI3RDynamics <: Dynamics
     α::Float64
     β::Vector{Float64}
     γ::Vector{Float64}

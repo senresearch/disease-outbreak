@@ -1,4 +1,6 @@
-struct SIRXDynamics
+include("dynamics.jl")
+
+struct SIRXDynamics <: Dynamics
     α::Float64
     β::Float64
     κ::Float64
