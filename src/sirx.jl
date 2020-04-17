@@ -7,11 +7,12 @@ struct SIRXDynamics <: Dynamics
     κ0::Float64
 end
 
-function initialize(N::Float64,C0::Float64,IXRatio::Float64,d::SIRXDynamics)
+function initialize(N::Float64,C0::Float64,IXRatio::Float64,
+    d::SIRXDynamics)
     state = zeros(nstates(d))
     state[4] = C0/N # X0, page 1, Supplement
     state[2] = IXRatio*(C0/N) # I0, page 1, supplement
-    state[1] = 1.0-state[2]-state[4]
+    state[1] = 1.0-state[2]-state[4] # S0
     return state
 end
 
