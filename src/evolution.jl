@@ -2,9 +2,9 @@ using Plots, Statistics, StatsBase
 include("sei3r.jl")
 include("sirx.jl")
 
-Dynamics = Union{SEI3RDynamics,SIRXDynamics}
 
-function evolve(N::Float64,state::Vector{Float64},d::Dynamics,ntime::Int64)
+function evolve(N::Float64,state::Vector{Float64},d::Dynamics,
+    ntime::Int64)
     states = zeros(nstates(d),ntime)
     deltaStates = zeros(nstates(d),ntime)
     states[:,1] = state
@@ -16,8 +16,8 @@ function evolve(N::Float64,state::Vector{Float64},d::Dynamics,ntime::Int64)
 end
 
 function plotEvolution(N::Float64,states::Matrix{Float64},
-    d::Dynamics;log10=false)
-    if(log10==false) 
+    d::Dynamics;log10::Bool=false)
+    if (log10==false)
         Plots.plot(N*Matrix(states'),label=stateNames(d))
     else
         Plots.plot(N*Matrix(states'),label=stateNames(d),ylab=:log10)

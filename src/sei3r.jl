@@ -1,6 +1,7 @@
 ## implement Markov Chain with SEIR
+include("dynamics.jl")
 
-struct SEI3RDynamics
+struct SEI3R <: Dynamics
     α::Float64
     β::Vector{Float64}
     γ::Vector{Float64}
@@ -8,16 +9,19 @@ struct SEI3RDynamics
     μ::Float64
 end
 
+# default constructor
+SEI3R() = SEI3R(1.0,[1.0, 0.0, 0.0],zeros(3),zeros(2),0.0)
+
 # change in a day
 """
-change(s::Vector{Float64},d::SEI3RDynamics)
+change(s::Vector{Float64},d::SEI3R)
 
 Retutn the change in the state of the population in a day
 
 s = state vector (S,E,I1,I2,I3,R,D)
 d = SEI3R dynamics parameters
 """
-function change(s::Vector{Float64},d::SEI3RDynamics)
+function change(s::Vector{Float64},d::SEI3R)
     # this is done purely for readability of the formula
     st = NamedTuple{(:S,:E,:I1,:I2,:I3,:R,:D)}(s)
     # N = sum(s) # population size
@@ -31,17 +35,18 @@ function change(s::Vector{Float64},d::SEI3RDynamics)
     return [S,E,I1,I2,I3,R,D]
 end
 
-function nstates(d::SEI3RDynamics)
+function nstates(d::SEI3R)
     return 7
 end
-function stateNames(d::SEI3RDynamics)
+function stateNames(d::SEI3R)
     return ["S" "E" "I1" "I2" "I3" "R" "D"]
 end
 
 function getParams(IncubPeriod::Float64,DurMildInf::Float64,
     MildRate::Float64,SevereRate::Float64,CriticalRate::Float64,
     FracSevere::Float64,FracCritical::Float64,
-    DurHosp::Float64,TimeICUStay::Float64,ICUDeathRate::Float64)
+    DurHosp::Float64,TimeICUStay::Float64,ICUDeathRate::Float64,
+    d::SEI3R)
 
     CFR = ICUDeathRate*FracCritical
     FracMild = 1.0-FracSevere-FracCritical
@@ -60,10 +65,10 @@ function getParams(IncubPeriod::Float64,DurMildInf::Float64,
     μ=(1.0/TimeICUStay)*(CFR/FracCritical)
     γ[3]=(1.0/TimeICUStay)-μ
 
-    return SEI3RDynamics(α,β,γ,p,μ)
+    return SEI3R(α,β,γ,p,μ)
 end
 
-function initialize(E::Float64,d::SEI3RDynamics)
+function initialize(E::Float64,d::SEI3R)
     state = zeros(nstates(d))
     state[2] = E
     state[1] = 1-E
