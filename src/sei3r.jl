@@ -6,7 +6,7 @@ struct SEI3R <: Dynamics
     β::Vector{Float64}
     γ::Vector{Float64}
     p::Vector{Float64}
-    μ::Floatx64
+    μ::Float64
 end
 
 # change in a day

@@ -11,7 +11,7 @@ end
 SIRX() = SIRX(1.0,1.0,0.0,0.0)
 
 function initialize(N::Float64,C0::Float64,IXRatio::Float64,
-    d::SIRX()
+    d::SIRX)
     state = zeros(nstates(d))
     state[4] = C0/N # X0, page 1, Supplement
     state[2] = IXRatio*(C0/N) # I0, page 1, supplement
