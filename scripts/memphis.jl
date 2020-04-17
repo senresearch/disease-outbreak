@@ -1,7 +1,7 @@
 using CSV, DataFrames,StatsBase
-include("distancing.jl")
+include(joinpath(@__DIR__, "..", "src", "distancing.jl"))
 
-memphis = CSV.read("data/Memphis_residences.csv",type=Float64,
+memphis = CSV.read(joinpath(@__DIR__, "..", "data","Memphis_residences.csv"),type=Float64,
                     missingstring="NA")
 
 names(memphis)
@@ -20,4 +20,4 @@ newInfections(status)
 
 cumulativeInfections(status)
 
-gif(infectionSpread(status,pos,80),"memphis.gif",fps=15)
+gif(infectionSpread(status,pos,80),joinpath(@__DIR__, "..", "plots", "memphis.gif"),fps=15)
