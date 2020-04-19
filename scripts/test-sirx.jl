@@ -23,7 +23,8 @@ summary(fit)
 plot(hubeiPop.N*s'[:,4],yaxis=:log,xaxis=:log,
      ylim=[10, 10^5],label="fitted")
 plot!((hubei.ConfirmedCases),xaxis=:log,yaxis=:log,label="actual")
-plot!(caseModel(x,exp.(fit.param),hubeiPop,
-                       hubei.ConfirmedCases[1]*1.0,
-                       6.2,8.0),yaxis=:log, label="estimated")
+dFit = getParams(fit.κ,fit.κ0,6.2,8.0,SIRX())
+hubeiPopFit = SIRXPopulation(57.0e6,hubei.ConfirmedCases[1]*1.0,
+                             fit.IXRatio)
+plot!(caseModel(t,dFit),yaxis=:log, label="estimated")
 # savefig("hubei.pdf")
