@@ -1,5 +1,8 @@
 include("dynamics.jl")
 
+using LsqFit
+using Optim
+
 struct SIRX <: Dynamics
     α::Float64
     β::Float64
@@ -10,13 +13,25 @@ end
 # default constructor
 SIRX() = SIRX(1.0,1.0,0.0,0.0)
 
-"""
-state0 = initialize(N::Float64,C0::Float64,IXRatio::Float64,
-    d::SIRX)
+# another constructor
+function getParams(κ::Float64,κ0::Float64,
+    R0Free::Float64,TInfected::Float64,d::Dynamics)
+    β = 1.0/TInfected
+    α = R0Free*β
+    return SIRX(α,β,κ,κ0)
+end
 
-Return a vector of inital state values.
-"""
+# number of states
+function nstates(d::SIRX)
+    return 4
+end
 
+# names of states
+function stateNames(d::SIRX)
+    return ["S" "I" "R" "X"]
+end
+
+# initializer for states
 function initialize(N::Float64,C0::Float64,IXRatio::Float64,
     d::SIRX)
     state = zeros(nstates(d))
@@ -30,7 +45,7 @@ end
 """
 change(s::Vector{Float64},d::SIRX)
 
-Retutn the change in the state of the population in a day.
+Return the change in the state of the population in a day
 
 s = state vector (S,I,R,X)
 d = SIRX dynamics parameters
@@ -45,33 +60,32 @@ function change(s::Vector{Float64},d::SIRX)
     return [S,I,R,X]
 end
 
-function nstates(d::SIRX)
-    return 4
-end
-function stateNames(d::SIRX)
-    return ["S" "I" "R" "X"]
-end
-
 """
-param0 = getParams(κ::Float64,κ0::Float64,
-    R0Free::Float64,TInfected::Float64,d::Dynamics)
+caseModel(t::Vector{Float64},params::Vector{Float64},
+    N::Float64,C0::Float64,R0::Float64,TI::Float64)
 
-Return inital parameter values of SIRX dynamics parameters.
-
-κ = the rate of quarantine measures for symptomatic infected
-    indviduals in (I)nfected state
-κ0 = the containment rate effective in both (S)useptible and I states
-      i.e. social distancing, curfews, etc.
-R0Free = basic (unconstrained) reproduction number computed by α/β.
-TInfected = the average time for an individual to remain infectious
-     in I before (R)emoved
-d = a type of Dynamics, SIRX
-
+Returns vector of cases given model dynamics and population parameters.    
 """
-
-function getParams(κ::Float64,κ0::Float64,
-    R0Free::Float64,TInfected::Float64,d::Dynamics)
-    β = 1.0/TInfected
-    α = R0Free*β
-    return SIRX(α,β,κ,κ0)
+function caseModel(t::Vector{Float64},params::Vector{Float64},
+    N::Float64,C0::Float64,R0::Float64,TI::Float64)
+    d = getParams(params[1],params[2],R0,TI,SIRX())
+    s0 = initialize(N,C0,params[3],d)
+    (d,ds) =evolve(N,s0,d,length(t))
+    return N.*d[4,:]
 end
+
+function model(x::Vector{Float64},p::Vector{Float64})
+    return log.(caseModel(x,exp.(p),hubeiPop,
+                hubei.ConfirmedCases[1]*1.0,6.2,8.0))
+end
+
+function ss(y::Vector{Float64},x::Vector{Float64},p::Vector{Float64})
+    return sum((y-model(x,p)).^2)
+end
+
+x = convert(Vector{Float64},(1:length(hubei.ConfirmedCases)))
+y = log.(hubei.ConfirmedCases)
+fit = curve_fit(model,x,y,[log(0.1),log(0.1),log(1)])
+
+fit
+exp.(fit.param)
