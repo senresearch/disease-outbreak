@@ -1,5 +1,6 @@
 ## implement Markov Chain with SEIR
 include("dynamics.jl")
+include("evolution.jl")
 
 struct SEI3R <: Dynamics
     α::Float64
@@ -35,12 +36,20 @@ function change(s::Vector{Float64},d::SEI3R)
     return [S,E,I1,I2,I3,R,D]
 end
 
+function initialize(E::Float64,d::SEI3R)
+    state = zeros(nstates(d))
+    state[2] = E
+    state[1] = 1-E
+    return state
+end
+
 function nstates(d::SEI3R)
     return 7
 end
 function stateNames(d::SEI3R)
     return ["S" "E" "I1" "I2" "I3" "R" "D"]
 end
+
 
 function getParams(IncubPeriod::Float64,DurMildInf::Float64,
     MildRate::Float64,SevereRate::Float64,CriticalRate::Float64,

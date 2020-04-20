@@ -1,9 +1,9 @@
 
 using LsqFit
 using CSV
-include(joinpath(@__DIR__, "..", "src", "sirx.jl"))
-include(joinpath(@__DIR__, "..", "src","evolution.jl"))
-
+# include(joinpath(@__DIR__, "..", "src", "sirx.jl"))
+# include(joinpath(@__DIR__, "..", "src","evolution.jl"))
+using DiseaseOutbreak
 
 # Hubei
 hubeiFile = joinpath(@__DIR__, "..", "data",

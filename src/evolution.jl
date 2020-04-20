@@ -1,15 +1,5 @@
 using Plots, Statistics, StatsBase
-
-include("sei3r.jl")
-include("sirx.jl")
-
-
-function initialize(E::Float64,d::Dynamics)
-    state = zeros(nstates(d))
-    state[2] = E
-    state[1] = 1-E
-    return state
-end
+include("dynamics.jl")
 
 
 """
