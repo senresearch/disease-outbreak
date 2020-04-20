@@ -1,4 +1,4 @@
-include("distancing.jl")
+include(joinpath(@__DIR__, "..", "src", "distancing.jl")
 
 #####################################
 # more infectious

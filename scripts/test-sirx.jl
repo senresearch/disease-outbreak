@@ -1,5 +1,6 @@
-include("sirx.jl")
-include("evolution.jl")
+include(joinpath(@__DIR__, "..", "src", "sirx.jl"))
+include(joinpath(@__DIR__, "..", "src","evolution.jl"))
+
 
 # Hubei
 N=57.1e6
