@@ -46,17 +46,16 @@ plotfit(shandongFit,40)
 plot!(estimatedStates(30,shandongPop,shandongC[1],9.66,
                 getParams(0.309,0.042,6.2,8.0,SIRX()))[:X],
                 yaxis=:log,label="paper")
-<<<<<<< HEAD
+
 plot!(fitted(shandongFit),yaxis=:log, label="estimated")
 
-
+fitted(shandongFit,40)
 
 # BASED ON THE LAST SCRIPT
 
 # Set initial parameters
 # getParams(κ, κ0, α, R0Free, TInfected, SIRX)
 d = getParams(0.038, 0.073, 6.2, 8.0, SIRX())
-hubeiPop = SIRXPopulation(57.0e6, hubei.ConfirmedCases[1]*1.0, 2.55)
 # Get initial states S-I-R-X
 s0 = initialize(hubeiPop,hubeiC[1],2.26, d)
 # Get new states after n = 100 days
@@ -68,17 +67,6 @@ s, ds = evolve(hubeiPop, s0, d, 100);
 myPlotEvolution(hubeiPop, s, d, log10 = "semilog", grid = true)
 
 
-t = convert(Vector{Float64},(1:length(hubei.ConfirmedCases)))
-y = convert(Vector{Float64},hubei.ConfirmedCases)
-
-
-fit = fitCaseModel(t, y, hubeiPop.N, 6.2, 8.0, [0.1,0.1,2.0])
-summary(fit)
-
-hubeiFit = fitCaseModel(23, hubeiC, hubeiPop,
-                        6.2, 8.0, [0.1,0.1,2.0])
-summary(hubeiFit)
-
 # This plot use the function in sirPlot.jl
 # it is possible to save with the keyword (e.g., savefigure = "my_plot.pdf")
 # it also possible to change the size of the figure with fsize = [10, 7]
@@ -87,7 +75,3 @@ plotEvoFitted(hubeiPop, s, d, hubeiC,
 
 
 # savefig("hubei.pdf") saving function has been added to the plot function
-=======
-
-fitted(shandongFit,40)
->>>>>>> upstream/master
