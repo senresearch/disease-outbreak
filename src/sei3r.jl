@@ -67,10 +67,3 @@ function getParams(IncubPeriod::Float64,DurMildInf::Float64,
 
     return SEI3R(α,β,γ,p,μ)
 end
-
-function initialize(E::Float64,d::SEI3R)
-    state = zeros(nstates(d))
-    state[2] = E
-    state[1] = 1-E
-    return state
-end
