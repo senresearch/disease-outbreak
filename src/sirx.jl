@@ -1,5 +1,6 @@
 using LsqFit
 using Optim
+using DataFrames
 import StatsBase.fitted
 
 include("dynamics.jl")
@@ -76,6 +77,14 @@ function caseModel(nt::Int64,N::Float64,C0::Float64,IXRatio::Float64,
     return N.*d[4,:]
 end
 
+function estimatedStates(nt::Int64,N::Float64,C0::Float64,
+    IXRatio::Float64,d::SIRX)
+    s0 = initialize(N,C0,IXRatio,d)
+    (d,ds) =evolve(N,s0,d,nt)
+    s1 = DataFrame(N.*d',[:S,:I,:R,:X])
+    return s1
+end
+
 function logCaseModelUnknown(nt::Int64,p::Vector{Float64},
     N::Float64,C0::Float64,R0Free::Float64,TInfected::Float64)
     d = getParams(p[1],p[2],R0Free,TInfected,SIRX())
@@ -113,6 +122,14 @@ end
 
 function fitted(fit::CaseModelFitResult)
     return exp.(logCaseModelUnknown(fit.inputs.nt,
-                fit.fit.param, fit.inputs.N, fit.inputs.C0,
+                exp.(fit.fit.param), fit.inputs.N, fit.inputs.C0,
                 fit.inputs.R0Free,fit.inputs.TInfected))
+end
+
+function estimatedStates(fit::CaseModelFitResult)
+    d = getParams(exp(fit.fit.param[1]),
+                  exp(fit.fit.param[2], fit.inputs.R0Free,
+                  fit.inputs.TInfected), SIRX() )
+    return estimatedStates( fit.inputs.nt, fit.inputs.C0,
+           exp(fit.fit.param[3]), d )
 end
