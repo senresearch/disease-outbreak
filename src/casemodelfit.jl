@@ -56,7 +56,7 @@ function plotfit(fit::CaseModelFitResult,nt::Int64=0)
     end
     plot(fit.inputs.C,yaxis=:log,seriestype=:scatter,
                 color=:black,label="actual")
-    plot!(estimatedStates(fit,nt)[:I],
+    plot!(estimatedStates(fit,nt)[!, :I],
                 yaxis=:log,label="infected")
     plot!(fitted(fit,nt),yaxis=:log, label="fitted",color=:blue)
 end
