@@ -1,5 +1,5 @@
 ## load packages
-using Plots
+
 using Distributions, Distances, DataFrames, StatsBase
 
 """

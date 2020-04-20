@@ -1,5 +1,6 @@
 using CSV, DataFrames,StatsBase
 using DiseaseOutbreak
+using Plots
 
 include("data_dir.jl")
 # include(joinpath(@__DIR__, "..", "src", "distancing.jl"))
