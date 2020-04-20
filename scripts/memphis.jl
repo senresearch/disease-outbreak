@@ -1,7 +1,10 @@
 using CSV, DataFrames,StatsBase
-include(joinpath(@__DIR__, "..", "src", "distancing.jl"))
+using DiseaseOutbreak
 
-memphis = CSV.read(joinpath(@__DIR__, "..", "data","Memphis_residences.csv"),type=Float64,
+include("data_dir.jl")
+# include(joinpath(@__DIR__, "..", "src", "distancing.jl"))
+
+memphis = CSV.read(joinpath(memphis_data_dir,"Memphis_residences.csv"),type=Float64,
                     missingstring="NA")
 
 names(memphis)
