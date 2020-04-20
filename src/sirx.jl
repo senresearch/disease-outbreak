@@ -1,7 +1,8 @@
-include("dynamics.jl")
-
 using LsqFit
 using Optim
+import StatsBase.fitted
+
+include("dynamics.jl")
 
 struct SIRX <: Dynamics
     α::Float64
@@ -31,21 +32,8 @@ function stateNames(d::SIRX)
     return ["S" "I" "R" "X"]
 end
 
-#######################
-
-struct SIRXPopulation <: Population
-    N::Float64
-    C0::Float64
-    IXRatio::Float64
-end
-
-# initializer for states
-function initialize(pop::SIRXPopulation,d::SIRX)
-    state = zeros(nstates(d))
-    state[4] = pop.C0/pop.N # X0, page 1, Supplement
-    state[2] = pop.IXRatio*(pop.C0/pop.N) # I0, page 1, supplement
-    state[1] = 1.0-state[2]-state[4] # S0
-    return state
+function R0Eff(d::SIRX)
+    return d.α/(d.β+d.κ+d.κ0)
 end
 
 # change in a day
@@ -67,23 +55,31 @@ function change(s::Vector{Float64},d::SIRX)
     return [S,I,R,X]
 end
 
+# initializer for states
+function initialize(N::Float64,C0::Float64,IXRatio::Float64,d::SIRX)
+    state = zeros(nstates(d))
+    state[4] = C0/N # X0, page 1, Supplement
+    state[2] = IXRatio*(C0/N) # I0, page 1, supplement
+    state[1] = 1.0-state[2]-state[4] # S0
+    return state
+end
+
 """
-caseModel(t::Vector{Float64},params::Vector{Float64},
-    N::Float64,C0::Float64,R0::Float64,TI::Float64)
+caseModel(nt::Int64,N::Float64,C0::Float64,IXRatio::Float64,d::SIRX)
 
 Returns vector of cases given model dynamics and population parameters.
 """
-function caseModel(t::Vector{Float64},pop::SIRXPopulation,d::SIRX)
-    s0 = initialize(pop,d)
-    (d,ds) =evolve(pop.N,s0,d,length(t))
-    return pop.N.*d[4,:]
+function caseModel(nt::Int64,N::Float64,C0::Float64,IXRatio::Float64,
+    d::SIRX)
+    s0 = initialize(N,C0,IXRatio,d)
+    (d,ds) =evolve(N,s0,d,nt)
+    return N.*d[4,:]
 end
 
-function logCaseModelUnknown(t::Vector{Float64},p::Vector{Float64},
+function logCaseModelUnknown(nt::Int64,p::Vector{Float64},
     N::Float64,C0::Float64,R0Free::Float64,TInfected::Float64)
     d = getParams(p[1],p[2],R0Free,TInfected,SIRX())
-    pop = SIRXPopulation(N,C0,p[3])
-    return log.(caseModel(t,pop,d))
+    return log.(caseModel(nt,N,C0,p[3],d))
 end
 
 # function rss(y::Vector{Float64},x::Vector{Float64},p::Vector{Float64})
@@ -94,25 +90,29 @@ struct CaseModelFitResult
     κ::Float64
     κ0::Float64
     IXRatio::Float64
-    fit::LsqFit.LsqFitResult
     inputs::NamedTuple
+    fit::LsqFit.LsqFitResult
 end
 
-function fitCaseModel(t::Vector{Float64},cases::Vector{Float64},
+function fitCaseModel(nt::Int64,cases::Vector{Float64},
     N::Float64,R0Free::Float64,TInfected::Float64,
     p0::Vector{Float64})
-    inputs = NamedTuple{(:N,:R0Free,:TInfected)}([N,R0Free,TInfected])
-    model(t,p) = logCaseModelUnknown(t,exp.(p),N,cases[1],R0Free,TInfected)
-    fit = curve_fit(model,t,log.(cases),log.(p0))
+    inputs = (nt=nt,C0=cases[1],N=N,R0Free=R0Free,TInfected=TInfected)
+    model(t,p) = logCaseModelUnknown(nt,exp.(p),N,cases[1],R0Free,TInfected)
+    fit = curve_fit(model,(1:nt)*1.0,log.(cases),log.(p0))
     return CaseModelFitResult( exp(fit.param[1]), exp(fit.param[2]),
-                         exp(fit.param[3]), fit, inputs )
+    exp(fit.param[3]), inputs, fit )
 end
 
-function R0Eff(d::SIRX)
-    return d.α/(d.β+d.κ+d.κ0)
-end
 
 function summary(fit::CaseModelFitResult)
-    r0eff = R0Eff(getParams(fit.κ,fit.κ0,fit.inputs.R0Free,fit.inputs.TInfected,SIRX()))
-    res = return NamedTuple{(:κ,:κ0,:IXRatio,:R0Eff)}([fit.κ,fit.κ0,fit.IXRatio,r0eff])
+    r0eff = R0Eff(getParams(fit.κ,fit.κ0,fit.inputs.R0Free,
+            fit.inputs.TInfected,SIRX()))
+    res = return (κ=fit.κ,κ0=fit.κ0,IXRatio=fit.IXRatio,R0Eff=r0eff)
+end
+
+function fitted(fit::CaseModelFitResult)
+    return exp.(logCaseModelUnknown(fit.inputs.nt,
+                fit.fit.param, fit.inputs.N, fit.inputs.C0,
+                fit.inputs.R0Free,fit.inputs.TInfected))
 end
