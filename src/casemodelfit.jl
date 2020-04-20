@@ -2,6 +2,8 @@
 # Functions related to fitting case series to SIRX model
 ########################################################
 
+include("sirx.jl")
+
 struct CaseModelFitResult
     κ::Float64
     κ0::Float64
@@ -24,7 +26,7 @@ end
 function summary(fit::CaseModelFitResult)
     r0eff = R0Eff(getParams(fit.κ,fit.κ0,fit.inputs.R0Free,
             fit.inputs.TInfected,SIRX()))
-    res = return (κ=fit.κ,κ0=fit.κ0,IXRatio=fit.IXRatio,R0Eff=r0eff)
+    return (κ=fit.κ,κ0=fit.κ0,IXRatio=fit.IXRatio,R0Eff=r0eff)
 end
 
 function fitted(fit::CaseModelFitResult,nt::Int64=0)

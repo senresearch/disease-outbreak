@@ -1,6 +1,7 @@
 using LsqFit
 using CSV
 include("../src/sirx.jl")
+include("../src/casemodelfit.jl")
 include("../src/evolution.jl")
 # Hubei
 hubeiFile = joinpath(@__DIR__, "..", "data",
@@ -24,9 +25,6 @@ shandongC = convert(Vector{Float64},shandong.ConfirmedCases[1:30])
 shandongFit = fitCaseModel(30,shandongC,shandongPop,
                            6.2,8.0,[0.5,0.045,15.0])
 summary(shandongFit)
-
-
-
 
 plotfit(shandongFit,40)
 plot!(estimatedStates(30,shandongPop,shandongC[1],9.66,
