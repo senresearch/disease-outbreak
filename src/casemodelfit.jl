@@ -2,8 +2,6 @@
 # Functions related to fitting case series to SIRX model
 ########################################################
 
-include("sirx.jl")
-
 struct CaseModelFitResult
     κ::Float64
     κ0::Float64

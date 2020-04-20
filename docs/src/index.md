@@ -1,17 +1,17 @@
 # DiseaseOutbreak.jl
 ```@meta
-CurrentModule = IssueReporter
+CurrentModule = DiseaseOutbreak
 ```
 ```@contents
 ```
 ## Functions
 ```@docs
-packageuri(pkgname::String)
+<!-- packageuri(pkgname::String)
 tokenisdefined()
 token()
 githubauth()
 repoid(package_name::String)
-report(package_name::String, title::String, body::String)
+report(package_name::String, title::String, body::String) -->
 ```
 
 ## Index

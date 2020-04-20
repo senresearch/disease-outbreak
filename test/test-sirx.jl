@@ -1,8 +1,8 @@
 using LsqFit
 using CSV
-include("../src/sirx.jl")
-include("../src/casemodelfit.jl")
-include("../src/evolution.jl")
+using Plots
+using DiseaseOutbreak
+
 # Hubei
 hubeiFile = joinpath(@__DIR__, "..", "data",
      "covid19_china","time_series_covid19_confirmed_hubei.csv")
@@ -18,7 +18,7 @@ hubeiC = convert(Vector{Float64},hubei.ConfirmedCases[1:22])
 hubeiFit = fitCaseModel(22,hubeiC,hubeiPop,
                         6.2,8.0,[0.1,0.1,2.0])
 summary(hubeiFit)
-plotfit(hubeiFit,60)
+plotfit(hubeiFit,40)
 # savefig("hubei.pdf")
 
 shandongC = convert(Vector{Float64},shandong.ConfirmedCases[1:30])

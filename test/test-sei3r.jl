@@ -1,5 +1,9 @@
-include("sei3r.jl")
-include("evolution.jl")
+# include("sei3r.jl")
+# include("evolution.jl")
+
+using DiseaseOutbreak
+# TODO: make numerical tests to replace plot tests
+using Test
 
 # default parameters for RCAN model
 d0 = getParams(5.0,6.0,0.5,0.1,0.1,0.15,0.06,6.0,8.0,0.4,SEI3R())
