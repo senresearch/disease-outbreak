@@ -1,5 +1,4 @@
 # Notes on SIR model
-Deterministic models
 
 ## SIR model dynamics
 
