@@ -97,9 +97,6 @@ function sqrtCaseModelUnknown(nt::Int64,p::Vector{Float64},
     return sqrt.(caseModel(nt,N,C0,p[3],d))
 end
 
-# function rss(y::Vector{Float64},x::Vector{Float64},p::Vector{Float64})
-#    return sum((y-model(x,p)).^2)
-# end
 
 struct CaseModelFitResult
     κ::Float64
