@@ -3,7 +3,6 @@ using Optim
 import StatsBase.fitted
 
 include("dynamics.jl")
-include("evolution.jl")
 
 struct SIRX <: Dynamics
     α::Float64

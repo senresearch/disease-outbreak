@@ -1,5 +1,4 @@
 using Plots, Statistics, StatsBase
-include("dynamics.jl")
 
 
 """

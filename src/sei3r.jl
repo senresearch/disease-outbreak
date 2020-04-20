@@ -1,6 +1,5 @@
 ## implement Markov Chain with SEIR
 include("dynamics.jl")
-include("evolution.jl")
 
 struct SEI3R <: Dynamics
     α::Float64
