@@ -35,12 +35,20 @@ function change(s::Vector{Float64},d::SEI3R)
     return [S,E,I1,I2,I3,R,D]
 end
 
+function initialize(E::Float64,d::SEI3R)
+    state = zeros(nstates(d))
+    state[2] = E
+    state[1] = 1-E
+    return state
+end
+
 function nstates(d::SEI3R)
     return 7
 end
 function stateNames(d::SEI3R)
     return ["S" "E" "I1" "I2" "I3" "R" "D"]
 end
+
 
 function getParams(IncubPeriod::Float64,DurMildInf::Float64,
     MildRate::Float64,SevereRate::Float64,CriticalRate::Float64,
@@ -66,11 +74,4 @@ function getParams(IncubPeriod::Float64,DurMildInf::Float64,
     γ[3]=(1.0/TimeICUStay)-μ
 
     return SEI3R(α,β,γ,p,μ)
-end
-
-function initialize(E::Float64,d::SEI3R)
-    state = zeros(nstates(d))
-    state[2] = E
-    state[1] = 1-E
-    return state
 end

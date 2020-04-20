@@ -1,6 +1,5 @@
 using Plots, Statistics, StatsBase
-include("sei3r.jl")
-include("sirx.jl")
+
 
 """
 s, ds = evolve(N::Float64,state::Vector{Float64},d::Dynamics,

@@ -1,7 +1,8 @@
 using LsqFit
 using CSV
-include("../src/sirx.jl")
-include("../src/evolution.jl")
+using Plots
+using DiseaseOutbreak
+
 # Hubei
 hubeiFile = joinpath(@__DIR__, "..", "data",
      "covid19_china","time_series_covid19_confirmed_hubei.csv")
