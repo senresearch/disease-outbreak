@@ -2,6 +2,8 @@
 # Functions related to fitting case series to SIRX model
 ########################################################
 
+import Base.summary
+
 struct CaseModelFitResult
     κ::Float64
     κ0::Float64

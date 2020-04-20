@@ -15,8 +15,9 @@ include("sei3r.jl")
 export SEI3R
 export SIRX
 export getParams, initialize
-export fitCaseModel, caseModel, fitted
+export caseModel
 
-
-
+include("casemodelfit.jl")
+export CaseModelFitResult
+export fitCaseModel, summary, fitted, estimatedStates, plotfit
 end # module
