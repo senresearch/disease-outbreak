@@ -5,8 +5,6 @@
 using PyCall, PyPlot, Plots
 pygui(:tk)
 
-include(realpath(joinpath((@__DIR__), "sirx.jl")))
-include(realpath(joinpath((@__DIR__), "casemodelfit.jl")))
 
 
 """
