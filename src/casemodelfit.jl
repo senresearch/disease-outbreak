@@ -3,6 +3,7 @@
 ########################################################
 
 import Base.summary
+using DataFrames
 
 struct CaseModelFitResult
     κ::Float64
@@ -26,7 +27,13 @@ end
 function summary(fit::CaseModelFitResult)
     r0eff = R0Eff(getParams(fit.κ,fit.κ0,fit.inputs.R0Free,
             fit.inputs.TInfected,SIRX()))
-    return (κ=fit.κ,κ0=fit.κ0,IXRatio=fit.IXRatio,R0Eff=r0eff)
+    df = exp.(DataFrame(LsqFit.confidence_interval(fit.fit)))
+    rename!(df,[:lo,:hi])
+    param = [ "κ", "κ0", "IXRatio" ]
+    est = [ fit.κ, fit.κ0, fit.IXRatio ]
+    insertcols!(df,1,parameter=param)
+    insertcols!(df,3,est=est)
+    return (coef=df,R0Eff=r0eff)
 end
 
 function fitted(fit::CaseModelFitResult,nt::Int64=0)

@@ -1,6 +1,4 @@
-using LsqFit
 using CSV
-using Plots
 using DiseaseOutbreak
 
 # Hubei
