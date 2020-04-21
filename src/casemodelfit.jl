@@ -45,7 +45,7 @@ function summary(fit::CaseModelFitResult)
     est = [ fit.κ, fit.κ0, fit.IXRatio ]
     insertcols!(df,1,parameter=param)
     insertcols!(df,3,est=est)
-    return (coef=df,R0Eff=r0eff)
+    return (coef=df,R0Eff=r0eff,mse=LsqFit.mse(fit.fit))
 end
 
 function fitted(fit::CaseModelFitResult,nt::Int64=0)
