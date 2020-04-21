@@ -67,20 +67,3 @@ function estimatedStates(fit::CaseModelFitResult,nt::Int64=0)
     return estimatedStates( nt, fit.inputs.N, fit.inputs.C0,
            exp(fit.fit.param[3]), d )
 end
-
-"""
-plotfit(fit::CaseModelFitResult,nt::Int64=0)
-
-- fit: output from fitCaseModel
-- nt: how long we want to extend predictions (use zero for not extrapolating)
-"""
-function plotfit(fit::CaseModelFitResult,nt::Int64=0)
-    if (nt==0)
-        nt = fit.inputs.nt
-    end
-    plot(fit.inputs.C,yaxis=:log,seriestype=:scatter,
-                color=:black,label="actual")
-    plot!(estimatedStates(fit,nt)[!,:I],
-                yaxis=:log,label="infected")
-    plot!(fitted(fit,nt),yaxis=:log, label="fitted",color=:blue)
-end
