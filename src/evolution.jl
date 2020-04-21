@@ -26,25 +26,3 @@ function evolve(N::Float64,state::Vector{Float64},d::Dynamics,
     end
     return (states=states,deltaStates=deltaStates)
 end
-
-"""
-plotEvolution(N::Float64,states::Matrix{Float64},
-    d::Dynamics;log10::Bool=false)
-
-Generate a plot of states evolved for the SIR model.
-
-N = the population size
-states = a matrix of states evoloved over time. See the function, 'evolve'.
-d = a type of Dynamics of the SIR model
-log10 = a keyword argument (default is false) of scaling state values by log10
-
-"""
-
-function plotEvolution(N::Float64,states::Matrix{Float64},
-    d::Dynamics;log10::Bool=false)
-    if (log10==false)
-        Plots.plot(N*Matrix(states'),label=stateNames(d))
-    else
-        Plots.plot(N*Matrix(states'),label=stateNames(d),ylab=:log10)
-    end
-end
