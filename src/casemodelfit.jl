@@ -13,6 +13,18 @@ struct CaseModelFitResult
     fit::LsqFit.LsqFitResult
 end
 
+"""
+fitCaseModel(nt::Int64,cases::Vector{Float64},
+    N::Float64,R0Free::Float64,TInfected::Float64,
+    p0::Vector{Float64})
+
+- nt: Integer with length of series
+- cases: Vector of case number series
+- N: Population size
+- R0Free: User supplied R0 in freely spreading population
+- TInfected: Average time of infection
+- p0: Floating point vector with initial values of estimates
+"""
 function fitCaseModel(nt::Int64,cases::Vector{Float64},
     N::Float64,R0Free::Float64,TInfected::Float64,
     p0::Vector{Float64})
@@ -56,14 +68,19 @@ function estimatedStates(fit::CaseModelFitResult,nt::Int64=0)
            exp(fit.fit.param[3]), d )
 end
 
+"""
+plotfit(fit::CaseModelFitResult,nt::Int64=0)
 
+- fit: output from fitCaseModel
+- nt: how long we want to extend predictions (use zero for not extrapolating)
+"""
 function plotfit(fit::CaseModelFitResult,nt::Int64=0)
     if (nt==0)
         nt = fit.inputs.nt
     end
     plot(fit.inputs.C,yaxis=:log,seriestype=:scatter,
                 color=:black,label="actual")
-    plot!(estimatedStates(fit,nt)[:I],
+    plot!(estimatedStates(fit,nt)[!,:I],
                 yaxis=:log,label="infected")
     plot!(fitted(fit,nt),yaxis=:log, label="fitted",color=:blue)
 end
