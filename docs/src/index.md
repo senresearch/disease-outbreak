@@ -1,4 +1,4 @@
-# DiseaseOutbreak.jl
+# DiseaseOutbreak.jl Documentation
 ```@meta
 CurrentModule = DiseaseOutbreak
 ```
@@ -6,6 +6,8 @@ CurrentModule = DiseaseOutbreak
 ```
 ## Functions
 ```@docs
+change(s::Vector{Float64},d::SIRX)
+
 <!-- packageuri(pkgname::String)
 tokenisdefined()
 token()
