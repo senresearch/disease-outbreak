@@ -35,6 +35,44 @@ function fitCaseModel(nt::Int64,cases::Vector{Float64},
     exp(fit.param[3]), inputs, fit )
 end
 
+#######################################################
+function fitCaseModel_ps(nt::Int64,cases::Vector{Float64},
+    N::Float64,R0Free::Float64,TInfected::Float64,p0::Vector{Float64})
+    inputs = (nt=nt,C0=cases[1],N=N,R0Free=R0Free,TInfected=TInfected,C=cases)
+    logcases = log.(cases)
+    f(p) = mse(logcases,logCaseModelUnknown(nt,exp.(p),N,cases[1],
+               R0Free,TInfected),nt-3.0)
+    fit = optimize(f,log.(p0),ParticleSwarm(lower=-3.0.*[1.0,1.0,0.0],
+                   upper=3.0.*[0.0,0.0,1.0],n_particles=10),
+                   Optim.Options(iterations=10000))
+    # fit = optimize(f,log.(p0),NelderMead())
+#    fit = optimize(f,log.(p0),-# 3.0.*[1.0,1.0,1.0],3.0.*[1.0,1.0,1.0],SAMIN())
+    param = Optim.minimizer(fit)
+
+    return ( κ=exp(param[1]), κ0= exp(param[2]),
+             IXRatio=exp(param[3]), inputs=inputs, fit=fit )
+end
+
+function fitCaseModel_nm(nt::Int64,cases::Vector{Float64},
+    N::Float64,R0Free::Float64,TInfected::Float64,p0::Vector{Float64})
+    inputs = (nt=nt,C0=cases[1],N=N,R0Free=R0Free,TInfected=TInfected,C=cases)
+    logcases = log.(cases)
+    f(p) = mse(logcases,logCaseModelUnknown(nt,exp.(p),N,cases[1],
+               R0Free,TInfected),nt-3.0)
+    fit = optimize(f,log.(p0),NelderMead())
+
+    param = Optim.minimizer(fit)
+
+    return ( κ=exp(param[1]), κ0= exp(param[2]),
+             IXRatio=exp(param[3]), inputs=inputs, fit=fit )
+end
+
+function mse(y::Vector{Float64},yhat::Vector{Float64},df::Float64)
+    return sum( (y-yhat).^2  )/df
+end
+
+
+#######################################################
 
 function summary(fit::CaseModelFitResult)
     r0eff = R0Eff(getParams(fit.κ,fit.κ0,fit.inputs.R0Free,

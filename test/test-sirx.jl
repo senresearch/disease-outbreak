@@ -14,7 +14,7 @@ shandongPop = 94.2e6
 
 hubeiC = convert(Vector{Float64},hubei.ConfirmedCases[1:22])
 hubeiFit = fitCaseModel(22,hubeiC,hubeiPop,
-                        6.2,8.0,[0.1,0.1,2.0])
+                        6.2,8.0,[0.0425,0.0645,2.65])
 summary(hubeiFit)
 plotFit(hubeiFit,40)
 # savefig("hubei.pdf")
@@ -22,10 +22,20 @@ pyplotFit(hubeiFit, 40, log10="semilog", grid=true, fsize=[12, 8])
 pyplotFit(hubeiFit, 40, log10="loglog", grid=true, fsize=[12, 8])
 pyplotFit(hubeiFit, 40, log10="null", grid=true, fsize=[12, 8])
 
+ps = fitCaseModel_ps(22,hubeiC,hubeiPop,
+                        6.2,8.0,[0.1,0.1,2.0])
+(ps.fit.minimum)
+
 shandongC = convert(Vector{Float64},shandong.ConfirmedCases[1:30])
 shandongFit = fitCaseModel(30,shandongC,shandongPop,
                            6.2,8.0,[0.5,0.045,15.0])
+shandongFit_ps = fitCaseModel_ps(30,shandongC,shandongPop,
+                           6.2,8.0,[0.5,0.045,15.0])
+shandongFit_nm = fitCaseModel_nm(30,shandongC,shandongPop,
+                           6.2,8.0,[0.5,0.045,15.0])
 summary(shandongFit)
+shandongFit_ps
+shandongFit_nm
 
 plotFit(shandongFit,40)
 plot!(estimatedStates(30,shandongPop,shandongC[1],9.66,
