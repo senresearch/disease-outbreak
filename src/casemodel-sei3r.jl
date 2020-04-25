@@ -13,7 +13,7 @@ function poissonLogLik(x::Int64,λ::Float64)
 end
 
 function fitCaseModel(cases::Vector{Int64},N::Int64,
-    ϕ::Float64,ϕ1::Float64,d0::SEI3R)
+    ϕ::Float64,ϕ1::Float64,E::Float64,d0::SEI3R)
 
     d = deepcopy(d0)
 
@@ -22,19 +22,20 @@ function fitCaseModel(cases::Vector{Int64},N::Int64,
 
     function f(param::Vector{Float64})
         d.β[1] = invlogit(param[2] + logit(d0.β[1]) )
-        s = estimatedStates(ntime,N,cases[1],invlogit(param[1]),d)
+        s = estimatedStates(ntime,N,cases[1],exp(param[3]),invlogit(param[1]),d)
         caseIntensity = s.I1*invlogit(param[1])
         # println(caseIntensity)
         return -poissonLogLik(diff(cases),caseIntensity[2:end])
         # return caseIntensity
     end
 
-    fit = optimize(f,logit.([ϕ,ϕ1]),NelderMead())
+    fit = optimize(f,[logit(ϕ),logit(ϕ1),log(E)],NelderMead())
     d.β[1] = invlogit(fit.minimizer[2] + logit(d0.β[1]) )
-    return (cases=cases,N=N,ϕ=invlogit(fit.minimizer[1]),d=d,fit=fit)
+    return (cases=cases,N=N,ϕ=invlogit(fit.minimizer[1]),
+            E=exp(fit.minimizer[3]),d=d,fit=fit)
 end
 
 function predictCases(fit,ntime)
-    s = estimatedStates(ntime,fit.N,fit.cases[1],fit.ϕ,fit.d)
+    s = estimatedStates(ntime,fit.N,fit.cases[1],fit.E,fit.ϕ,fit.d)
     return cumsum(s.I1*fit.ϕ)
 end

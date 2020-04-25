@@ -91,3 +91,11 @@ function estimatedStates(nt::Int64,N::Int64,C0::Int64,
     s1 = DataFrame(N.*d',[:S,:E,:I1,:I2,:I3,:R,:D])
     return s1
 end
+
+function estimatedStates(nt::Int64,N::Int64,C0::Int64,
+    E::Float64,CIRatio::Float64,d::SEI3R)
+    s0 = initialize(E/N,(C0/N)/CIRatio,d)
+    (d,ds) =evolve(N*1.0,s0,d,nt)
+    s1 = DataFrame(N.*d',[:S,:E,:I1,:I2,:I3,:R,:D])
+    return s1
+end
