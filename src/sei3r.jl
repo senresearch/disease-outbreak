@@ -42,6 +42,14 @@ function initialize(E::Float64,d::SEI3R)
     return state
 end
 
+function initialize(E::Float64,I1::Float64,d::SEI3R)
+    state = zeros(nstates(d))
+    state[3] = I1
+    state[2] = E
+    state[1] = 1-E-I1
+    return state
+end
+
 function nstates(d::SEI3R)
     return 7
 end
