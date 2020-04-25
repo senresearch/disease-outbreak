@@ -83,3 +83,11 @@ function getParams(IncubPeriod::Float64,DurMildInf::Float64,
 
     return SEI3R(α,β,γ,p,μ)
 end
+
+function estimatedStates(nt::Int64,N::Int64,C0::Int64,
+    CIRatio::Float64,d::SEI3R)
+    s0 = initialize(0.0,(C0/N)/CIRatio,d)
+    (d,ds) =evolve(N*1.0,s0,d,nt)
+    s1 = DataFrame(N.*d',[:S,:E,:I1,:I2,:I3,:R,:D])
+    return s1
+end
