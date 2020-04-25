@@ -29,3 +29,19 @@ state1 = initialize(1.0/N,d1)
 (states1,deltaStates1) = evolve(N,state1,d1,300)
 plotEvolution(N,states1,d1)
 # savefig("dist0.pdf")
+
+
+sheet = XLSX.readdata(joinpath("../memphis-covid-data",
+             "covid_status_updates/",
+             "COVID Status April 23.xlsx"),
+             "Status","A1:C49")
+
+memCases = convert(Vector{Int64},sheet[2:49,2])
+memPop = 1400000
+
+fit = fitCaseModel(memCases[13:end],memPop,0.2,0.8,10.0,d0)
+plot(memCases[13:end],legend=:bottomright,label="cumulative cases")
+prd = predictCases(fit,60)
+plot!(prd,label="fit")
+
+fit.E
