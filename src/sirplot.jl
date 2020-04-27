@@ -165,9 +165,12 @@ function pyplotFit(fit::CaseModelFitResult, nt::Int64 = 0;
     end
 
     if log10 == "semilog"
-        ax.semilogy(fit.inputs.C, linestyle ="-", color = "#A7A7A7",
-                  marker="s", markersize = 15, markerfacecolor= "none",
-                  label= "actual")
+        # ax.semilogy(fit.inputs.C, linestyle ="-", color = "#004477",
+        #           marker=".", markersize = 15, markerfacecolor= "none",
+        #           label= "actual")
+        ax.semilogy(fit.inputs.C, linestyle ="", color = "#004477",
+                marker=".", markersize = 15, markerfacecolor= "#004477",
+                label= "actual")
         ax.semilogy(estimatedStates(fit, nt)[!, :I], linestyle ="--", color = "red",
                   label= "infected")
         ax.semilogy(fitted(fit, nt), label="fitted")
@@ -177,8 +180,8 @@ function pyplotFit(fit::CaseModelFitResult, nt::Int64 = 0;
         xlim(0, nt)
 
     elseif log10 == "loglog"
-        ax.loglog(fit.inputs.C, linestyle ="-", color = "#A7A7A7",
-                  marker="s", markersize = 15, markerfacecolor= "none",
+        ax.loglog(fit.inputs.C, linestyle ="", color = "#004477",
+                  marker=".", markersize = 15, markerfacecolor= "#004477",
                   label= "actual")
         ax.loglog(estimatedStates(fit, nt)[!, :I], linestyle ="--", color = "red",
                   label= "infected")
@@ -189,8 +192,8 @@ function pyplotFit(fit::CaseModelFitResult, nt::Int64 = 0;
         # xlim(0, log10(nt+2))
 
     elseif log10 == "null"
-        ax.plot(fit.inputs.C, linestyle ="-", color = "#A7A7A7",
-                  marker="s", markersize = 15, markerfacecolor= "none",
+        ax.plot(fit.inputs.C, linestyle ="", color = "#004477",
+                  marker=".", markersize = 15, markerfacecolor= "#004477",
                   label= "actual")
         ax.plot(estimatedStates(fit, nt)[!, :I], linestyle ="--", color = "red",
                   label= "infected")
@@ -201,8 +204,8 @@ function pyplotFit(fit::CaseModelFitResult, nt::Int64 = 0;
         xlim(0, nt)
     else
         println("Incorrect log10 option, no log is applied.")
-        ax.plot(fit.inputs.C, linestyle ="-", color = "#A7A7A7",
-                  marker="s", markersize = 15, markerfacecolor= "none",
+        ax.plot(fit.inputs.C, linestyle ="", color = "#004477",
+                  marker=".", markersize = 15, markerfacecolor= "#004477",
                   label= "actual")
         ax.plot(estimatedStates(fit, nt)[!, :I], linestyle ="--", color = "red",
                   label= "infected")
@@ -221,8 +224,10 @@ function pyplotFit(fit::CaseModelFitResult, nt::Int64 = 0;
     ax.spines["top"].set_visible(false) # Hide the top edge of the axis
     ax.spines["right"].set_visible(false) # Hide the right edge of the axis
     ax.xaxis.set_ticks_position("bottom")
+
     # ax.spines["left"].set_position(("axes",-0.03)) # Offset the left scale from the axis
     # ax.spines["bottom"].set_position(("axes",-0.05)) # Offset the bottom scale from the axis
+
     ax.autoscale(false)
 
 

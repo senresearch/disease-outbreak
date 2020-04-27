@@ -18,7 +18,7 @@ hubeiFit = fitCaseModel(22,hubeiC,hubeiPop,
 summary(hubeiFit)
 plotFit(hubeiFit,40)
 # savefig("hubei.pdf")
-pyplotFit(hubeiFit, 40, log10="semilog", grid=true, fsize=[12, 8])
+pyplotFit(hubeiFit, 40, log10="semilog", grid=false, fsize=[12, 8])
 pyplotFit(hubeiFit, 40, log10="loglog", grid=true, fsize=[12, 8])
 pyplotFit(hubeiFit, 40, log10="null", grid=true, fsize=[12, 8])
 
