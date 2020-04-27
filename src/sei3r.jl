@@ -87,7 +87,7 @@ end
 function estimatedStates(nt::Int64,N::Int64,C0::Int64,
     CIRatio::Float64,d::SEI3R)
     s0 = initialize(0.0,(C0/N)/CIRatio,d)
-    (d,ds) =evolve(N*1.0,s0,d,nt)
+    (d,ds) = evolve(N*1.0,s0,d,nt)
     s1 = DataFrame(N.*d',[:S,:E,:I1,:I2,:I3,:R,:D])
     return s1
 end
@@ -95,7 +95,17 @@ end
 function estimatedStates(nt::Int64,N::Int64,C0::Int64,
     E::Float64,CIRatio::Float64,d::SEI3R)
     s0 = initialize(E/N,(C0/N)/CIRatio,d)
-    (d,ds) =evolve(N*1.0,s0,d,nt)
+    (d,ds) = evolve(N*1.0,s0,d,nt)
+    s1 = DataFrame(N.*d',[:S,:E,:I1,:I2,:I3,:R,:D])
+    return s1
+end
+
+## betachange is how the β1 parameter is changed on the logit scale
+function estimatedStates(N::Int64,C0::Int64,
+    E::Float64,CIRatio::Float64,betachange::Vector{Float64},
+    d::SEI3R)
+    s0 = initialize(E/N,(C0/N)/CIRatio,d)
+    (d,ds) = evolve(N*1.0,s0,betachange,d)
     s1 = DataFrame(N.*d',[:S,:E,:I1,:I2,:I3,:R,:D])
     return s1
 end

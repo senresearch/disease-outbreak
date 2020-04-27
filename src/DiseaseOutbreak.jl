@@ -21,6 +21,10 @@ include("casemodelfit.jl")
 export CaseModelFitResult
 export fitCaseModel, summary, fitted, estimatedStates
 
+include("casemodel-sei3r.jl")
+export CaseModelFitResult
+export fitCaseModel, estimatedStates
+
 include("sirplot.jl")
 export plotEvolution, plotFit
 export pyplotEvolution, pyplotFit
