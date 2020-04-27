@@ -17,13 +17,13 @@ export SIRX
 export getParams, initialize
 export caseModel
 
-include("casemodelfit.jl")
+include("casemodel-sirx.jl")
 export CaseModelFitResult
 export fitCaseModel, summary, fitted, estimatedStates
 
 include("casemodel-sei3r.jl")
 export CaseModelFitResult
-export fitCaseModel, estimatedStates
+export fitCaseModel, estimatedStates, predictCases
 
 include("sirplot.jl")
 export plotEvolution, plotFit
