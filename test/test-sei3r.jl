@@ -2,6 +2,7 @@
 # include("evolution.jl")
 
 using XLSX
+using Plots
 using DiseaseOutbreak
 # TODO: make numerical tests to replace plot tests
 using Test
@@ -71,16 +72,28 @@ tn = CSV.read("/Users/sen/covid-memphis/tn.csv")
 tnCases = reverse(tn.ConfirmedCases[1:42])
 tnPop = 6800000
 fittn = fitCaseModel(tnCases,tnPop,0.01,0.5,100.0,d0)
-plot(tnCases,legend=:bottomright,yaxis=:log,label="cumulative cases")
-prdtn = predictCases(fittn,60)
+plot(tnCases,legend=:bottomright,yaxis=:log,label="cumulative cases",color=:black)
+prdtn = predictCases(fittn,30)
 plot!(prdtn,label="fit0",yaxis=:log)
 xtn = ones(length(tnCases)-1,2)
 xtn[1:10,2] = zeros(10)
 
-fittn1 = fitCaseModel(tnCases,xtn,tnPop,0.02,1000.0,d0)
-xtn1 = ones(200,2)
+fittn1 = fitCaseModel(tnCases,xtn,tnPop,0.01,500.0,d0)
+xtn1 = ones(60,2)
 xtn1[1:10,2] = zeros(10)
 prdtn1 = predictCases(fittn1,xtn1)
-plot!(prdtn1,label="fit2",yaxis=:log)
+plot!(prdtn1,label="fit1",yaxis=:log)
 
 plot(diff(tnCases),legend=:bottomright)
+plot!(diff(prdtn1))
+
+fittn1.fit.minimizer
+
+7*invlogit(0.895-2.50)
+7*invlogit(0.895)
+
+mob = hcat(ones(41),reverse(enc.encountersMetric[4:44]) )
+
+fittn2 = fitCaseModel(tnCases,mob,tnPop,0.001,1000.0,d0)
+prdtn2 = predictCases(fittn2,mob)
+plot!(prdtn2,label="mob",yaxis=:log)

@@ -89,14 +89,14 @@ predictCases(fit,ntime)
 Predict number of cases using a fit object.
 """
 function predictCases(fit,ntime::Int64)
-    s = estimatedStates(ntime,fit.N,fit.cases[1],fit.E,fit.ρ,fit.d)
+    s = estimatedStates(ntime,fit.N,fit.cases[1],fit.E0,fit.ρ,fit.d)
     return cumsum(s.I1*fit.ρ)
 end
 
 function predictCases(fit,x::Matrix{Float64})
     ϕ = hcat(fit.fit.minimizer[3:end])
     betachange = (x*ϕ)[:,1]
-    s = estimatedStates(fit.N,fit.cases[1],fit.E,fit.ρ,
+    s = estimatedStates(fit.N,fit.cases[1],fit.E0,fit.ρ,
         betachange,fit.d)
     return cumsum(s.I1*fit.ρ)
 end

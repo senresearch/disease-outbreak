@@ -24,6 +24,7 @@ export fitCaseModel, summary, fitted, estimatedStates
 include("casemodel-sei3r.jl")
 export CaseModelFitResult
 export fitCaseModel, estimatedStates, predictCases
+export logit, invlogit
 
 include("sirplot.jl")
 export plotEvolution, plotFit
