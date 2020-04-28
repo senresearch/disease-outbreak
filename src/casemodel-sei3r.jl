@@ -1,6 +1,14 @@
 using Optim
 using Calculus
 
+struct CaseModelFitSEI3R <: CaseModelFitResult
+    ρ::Float64
+    E0::Float64
+    info::Matrix{Float64}
+    inputs::NamedTuple
+    fit::Optim.MultivariateOptimizationResults
+end
+
 logit(x::Float64) = log(x/(1-x))
 invlogit(x::Float64) = exp(x)/(1+exp(x))
 
@@ -38,7 +46,7 @@ function fitCaseModel(cases::Vector{Int64},N::Int64,
     d.β[1] = invlogit(fit.minimizer[2] + logit(d0.β[1]) )
     info = Calculus.hessian(f,fit.minimizer)
     return (cases=cases,N=N,ρ=invlogit(fit.minimizer[1]),
-            E=exp(fit.minimizer[3]),d=d,info=info,fit=fit)
+            E0=exp(fit.minimizer[3]),d=d,info=info,fit=fit)
 end
 
 ###########
@@ -72,7 +80,7 @@ function fitCaseModel(cases::Vector{Int64},x::Matrix{Float64},
     # d.β[1] = invlogit(fit.minimizer[2] + logit(d0.β[1]))
     info = Calculus.hessian(f,fit.minimizer)
     return (cases=cases,N=N,ρ=invlogit(fit.minimizer[1]),
-            E=exp(fit.minimizer[3]),d=d0,info=info,fit=fit)
+            E0=exp(fit.minimizer[3]),d=d0,info=info,fit=fit)
 end
 
 """
