@@ -9,7 +9,11 @@
 [![Coveralls](https://coveralls.io/repos/github/chelseatrotter/DiseaseOutbreak.jl/badge.svg?branch=master)](https://coveralls.io/github/chelseatrotter/DiseaseOutbreak.jl?branch=master)
 [![Build Status](https://api.cirrus-ci.com/github/chelseatrotter/DiseaseOutbreak.jl.svg)](https://cirrus-ci.com/github/chelseatrotter/DiseaseOutbreak.jl) -->
 
-# Modeling disease outbreaks
+Tools for modeling disease outbreaks
+
+This Julia package contains functions for simulating the course of an infectious disease outbreak and for fitting observed case count data to estimate parameters of SEIR models.  This is very much a work in progress.  If you plan on using or contributing to this work, please contact the authors or post an issue.
+
+### Simulating disease outbreaks
 
 We use a generative discrete Markov chain to model the progress of an
 infectious disease in a population.  It assumes that everyone within a
@@ -21,8 +25,6 @@ infectious.  You can seed the simulator with a the number and
 positions of currently infected individuals.  The data directory
 contains household information for Memphis.
 
-TODO:
+### SEIR model and variants
 
-- Layer information about severity
-- Add testing regime
-- Add ability to estimate parameters from observed data
+We use a discrete difference equations to model the course of an infectious disease outbreak.  We have implemented the SEIIIR model of [Hill](https://github.com/alsnhll/SEIR_COVID19) and the SIR-X model of [Maier and Brockmann](https://science.sciencemag.org/content/early/2020/04/07/science.abb4557.abstract.).  Our model fitting strategies differ from the above work and we are aiming for a unified interface to a variety of SEIR model variants.
